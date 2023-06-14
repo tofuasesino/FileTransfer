@@ -102,9 +102,7 @@ public class RecibirController {
                         String fileType = dis.readUTF();
                         long fileSize = dis.readLong();
                         archivoArrayList.add(new Archivo(fileName, fileType, fileSize));
-                        while (dis.read() != -1) {
-                            arrayList.add(dis.read());
-                        }
+                        System.out.println(archivoArrayList.get(0));
                     }
 
 

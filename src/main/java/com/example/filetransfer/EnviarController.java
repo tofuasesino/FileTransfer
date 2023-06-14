@@ -86,9 +86,9 @@ public class EnviarController {
             tfDestIP.setPromptText("Introduce una IP válida");
         } else {
             try {
-                Socket socket = new Socket(tfDestIP.getText(), PORT);
 
                 for(Archivo archivo : finalArchivoList) {
+                    Socket socket = new Socket(tfDestIP.getText(), PORT);
                     OutputStream out = socket.getOutputStream();
                     DataOutputStream dout = new DataOutputStream(out);
 
@@ -102,9 +102,9 @@ public class EnviarController {
                     dout.write(byteArray, 0, byteArray.length);
                     dout.flush();
                     finalArchivoList.remove(archivo);
+                    socket.close();
 
                 }
-                socket.close();
 
 
             } catch (FileNotFoundException ex) {
