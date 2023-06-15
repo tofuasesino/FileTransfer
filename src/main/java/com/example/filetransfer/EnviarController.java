@@ -62,6 +62,7 @@ public class EnviarController {
             }
         });
         tcFileSize.setCellValueFactory(new PropertyValueFactory<Archivo, Long>("FileSize"));
+        //tvFiles.getItems().addAll(finalArchivoList);
         tvFiles.setItems(archivoObservablelist);
     }
 
@@ -102,7 +103,6 @@ public class EnviarController {
                         out.write(buffer, 0, count);
                     }
                     System.out.println("Starting to send file");
-                    finalArchivoList.remove(archivo);
                     in.close();
                     out.close();
 
@@ -148,6 +148,16 @@ public class EnviarController {
             btnEnviar.setDisable(false);
 
         }
+    }
 
+    @FXML
+    protected void btnDeleteFilesActionEvent(ActionEvent e) {
+        if (!finalArchivoList.isEmpty()) {
+
+            for (int i = 0; i < finalArchivoList.size(); i++) {
+                finalArchivoList.remove(0);
+            }
+            tvFiles.getItems().clear();
+        }
     }
 }

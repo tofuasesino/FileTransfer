@@ -32,5 +32,6 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
+      <Button fx:id="btnRemoveFiles" layoutX="481.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnDeleteFilesActionEvent" text="Borrar archivos" />
    </children>
 </AnchorPane>
