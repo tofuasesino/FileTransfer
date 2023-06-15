@@ -9,18 +9,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.shape.Arc;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -44,9 +38,13 @@ public class RecibirController {
     @FXML
     private TableColumn<Archivo, Long> tcSize;
     @FXML
+    private TableColumn<Archivo, String> tcPath;
+    @FXML
     private TextField tfDir;
     @FXML
     private Button btnStartSocket;
+    @FXML
+    private Label lblErr;
 
 
     @FXML
@@ -66,6 +64,7 @@ public class RecibirController {
         });
 
         tcSize.setCellValueFactory(new PropertyValueFactory<Archivo, Long>("FileSize"));
+        tcPath.setCellValueFactory(new PropertyValueFactory<Archivo, String>("FilePath"));
         tvRec.setItems(archivoObservableList);
     }
     @FXML
@@ -84,41 +83,57 @@ public class RecibirController {
     }
 
     @FXML
-    protected void btnStartSocketActionEvent() throws IOException {
-        btnStartSocket.setDisable(true);
+    protected void btnStartSocketActionEvent() throws IOException{
         serverSocket = new ServerSocket(PORT);
         serverSocketState = true;
-        ArrayList<Integer> arrayList = new ArrayList<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        Socket clientSocket = serverSocket.accept();
-                        InputStream inputStream = clientSocket.getInputStream();
-                        DataInputStream dis = new DataInputStream(inputStream);
-                        String fileName = dis.readUTF();
-                        String fileType = dis.readUTF();
-                        long fileSize = dis.readLong();
-                        Archivo archivo = new Archivo(fileName, fileType, fileSize);
-                        archivoArrayList.add(archivo);
-                        System.out.println(archivo.getFileName() + archivo.getFileType() + " " + archivo.getFileSize());
-                        tvRec.getItems().add(archivo);
+        if (tfDir.getText().isEmpty()) {
+            lblErr.setText("Introduce la ruta para\nguardar los archivos");
+            lblErr.setVisible(true);
+        } else {
+            lblErr.setVisible(false);
+            btnStartSocket.setDisable(true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (true) {
+                            Socket clientSocket = serverSocket.accept();
+                            InputStream in = clientSocket.getInputStream();
+                            DataInputStream dis = new DataInputStream(in);
+
+                            String fileName = dis.readUTF();
+                            String fileType = dis.readUTF();
+                            long fileSize = dis.readLong();
+                            OutputStream out = new FileOutputStream(tfDir.getText() + File.separator + fileName + "." + fileType);
+
+                            byte[] buffer = new byte[16*1024];
+                            int count;
+                            while ((count = in.read(buffer)) != -1) {
+                                out.write(buffer, 0, count);
+                            }
+
+                            out.close();
+                            in.close();
+
+
+                            tvRec.getItems().add(new Archivo(fileName, fileType, fileSize, tfDir.getText()));
+                        }
+
+
+
+                    } catch (FileNotFoundException e) {
+                        lblErr.setText("ERROR: No se puede crear el archivo");
+                        lblErr.setVisible(true);
+                    } catch (IOException e) {
+                        lblErr.setText("Error de I/O");
+                        lblErr.setVisible(true);
                     }
-
-
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
-            }
-        }).start();
+            }).start();
+        }
+
 
         }
 
-    @FXML
-    protected void btnChangeDirActionEvent() {
-
-    }
 }

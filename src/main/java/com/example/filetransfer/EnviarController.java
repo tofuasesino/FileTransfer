@@ -89,20 +89,22 @@ public class EnviarController {
 
                 for(Archivo archivo : finalArchivoList) {
                     Socket socket = new Socket(tfDestIP.getText(), PORT);
-                    OutputStream out = socket.getOutputStream();
-                    DataOutputStream dout = new DataOutputStream(out);
 
-                    dout.writeUTF(archivo.getFileName());
-                    dout.writeUTF(archivo.getFileType());
-                    dout.writeLong(archivo.getFileSize());
-                    byte[] byteArray = new byte[(int)archivo.getFileSize()];
-                    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(archivo.getFilePath()));
-                    bis.read(byteArray, 0, byteArray.length);
+                    DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                    InputStream in = new FileInputStream(archivo.getFilePath());
+
+                    out.writeUTF(archivo.getFileName());
+                    out.writeUTF(archivo.getFileType());
+                    out.writeLong(archivo.getFileSize());
+                    int count;
+                    byte[] buffer = new byte[16*1024];
+                    while ((count = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, count);
+                    }
                     System.out.println("Starting to send file");
-                    dout.write(byteArray, 0, byteArray.length);
-                    dout.flush();
                     finalArchivoList.remove(archivo);
-                    socket.close();
+                    in.close();
+                    out.close();
 
                 }
 

@@ -7,24 +7,30 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.filetransfer.RecibirController">
    <children>
       <TextField fx:id="tfDir" layoutX="88.0" layoutY="343.0" prefHeight="25.0" prefWidth="332.0" />
-      <Button fx:id="btnChangeDir" layoutX="435.0" layoutY="343.0" mnemonicParsing="false" onAction="#btnChangeDirActionEvent" text="Cambiar" />
       <Label layoutX="26.0" layoutY="347.0" prefHeight="17.0" prefWidth="58.0" text="Directorio:" />
-      <Pane blendMode="DARKEN" layoutX="19.0" layoutY="57.0" prefHeight="261.0" prefWidth="561.0">
+      <Pane blendMode="DARKEN" layoutX="19.0" layoutY="86.0" prefHeight="232.0" prefWidth="561.0">
          <children>
-            <TableView fx:id="tvRec" layoutY="-2.0" prefHeight="267.0" prefWidth="561.0">
+            <TableView fx:id="tvRec" layoutY="1.0" prefHeight="232.0" prefWidth="561.0">
               <columns>
-                <TableColumn fx:id="tcFile" prefWidth="281.0" text="Archivo" />
-                <TableColumn fx:id="tcType" prefWidth="113.0" text="Tipo" />
-                  <TableColumn fx:id="tcSize" prefWidth="166.0" text="Tamaño (KB)" />
+                <TableColumn fx:id="tcFile" prefWidth="193.0" text="Archivo" />
+                <TableColumn fx:id="tcType" text="Tipo" />
+                  <TableColumn fx:id="tcSize" minWidth="0.0" prefWidth="85.0" text="Tamaño (KB)" />
+                  <TableColumn fx:id="tcPath" maxWidth="205.0" prefWidth="202.0" text="Ruta guardada" />
               </columns>
             </TableView>
          </children>
       </Pane>
       <Button fx:id="btnBack" layoutX="19.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnBackActionEvent" text="Volver" />
       <Button fx:id="btnStartSocket" layoutX="509.0" layoutY="343.0" mnemonicParsing="false" onAction="#btnStartSocketActionEvent" text="Empezar" />
+      <Label fx:id="lblErr" layoutX="209.0" layoutY="12.0" prefHeight="65.0" prefWidth="204.0" textAlignment="JUSTIFY" textFill="RED" visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
